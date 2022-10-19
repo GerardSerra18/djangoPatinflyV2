@@ -4,6 +4,7 @@ from core.models import Scooter
 
 
 # Create your views here.
+# Prueba
 
 def index (request):
 
