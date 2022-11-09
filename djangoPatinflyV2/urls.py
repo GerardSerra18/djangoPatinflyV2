@@ -13,11 +13,13 @@ Including another URLconf
     1. Import to include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.models import User
 
 from core.models import Scooter
+from djangoPatinflyV2 import settings
 from frontend import views as frontend_views
 from rest_framework import serializers, viewsets, routers
 
@@ -52,4 +54,4 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
     path('index', frontend_views.index)
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
