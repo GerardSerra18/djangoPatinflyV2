@@ -61,7 +61,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
+# Comentario de test
 ROOT_URLCONF = 'djangoPatinflyV2.urls'
 
 TEMPLATES = [
