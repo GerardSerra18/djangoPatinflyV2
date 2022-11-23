@@ -1,0 +1,9 @@
+core/__pycache__/
+core/migrations/
+djangoPatinflyV2/__pycache__/
+
+endpoints/__pycache__/
+endpoints/migrations/
+
+frontend/__pycache__/
+frontend/migrations/
