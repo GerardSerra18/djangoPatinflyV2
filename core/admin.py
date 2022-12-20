@@ -11,3 +11,12 @@ class ScooterAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Scooter, ScooterAdmin)
+
+from core.models import Rent
+
+
+class RentAdmin(admin.ModelAdmin):
+    list_display = ['date_start', 'uuid']
+
+
+admin.site.register(Rent, RentAdmin)

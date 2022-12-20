@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ml2+1^)%j&f9*ytqe26@(*)1z*#1%*nguj$h1mf1p9ij#&2j98'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['patinfly-v2.herokuapp.com', "127.0.0.1"]
 

@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.utils import timezone
 
@@ -21,3 +20,11 @@ class Scooter(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Rent(models.Model):
+    date_start = models.DateTimeField(blank=True, null=True)
+    uuid = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.uuid

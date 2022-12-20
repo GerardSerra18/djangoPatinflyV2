@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.models import User
 
-from core.models import Scooter
+from core.models import Scooter, Rent
 from djangoPatinflyV2 import settings
 from frontend import views as frontend_views
 from rest_framework import serializers, viewsets, routers
@@ -44,10 +44,20 @@ class ScooterViewSet(viewsets.ModelViewSet):
     queryset = Scooter.objects.all()
     serializer_class = ScooterSerializer
 
+class RentSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Rent
+        fields = ['date_start', 'uuid']
+
+class RentViewSet(viewsets.ModelViewSet):
+    queryset = Rent.objects.all()
+    serializer_class = RentSerializer
+
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'scooter', ScooterViewSet)
+router.register(r'rent', RentViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
