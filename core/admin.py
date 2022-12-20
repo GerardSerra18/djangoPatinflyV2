@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from core.models import Scooter
+from core.models import Scooter, ScooterUser, Rent
 
 
 class ScooterAdmin(admin.ModelAdmin):
@@ -12,11 +12,16 @@ class ScooterAdmin(admin.ModelAdmin):
 
 admin.site.register(Scooter, ScooterAdmin)
 
-from core.models import Rent
-
 
 class RentAdmin(admin.ModelAdmin):
     list_display = ['date_start', 'uuid']
 
 
 admin.site.register(Rent, RentAdmin)
+
+
+class ScooterUserAdmin(admin.ModelAdmin):
+    list_display = ['date_start', 'uuid']
+
+
+admin.site.register(ScooterUser, ScooterUserAdmin)

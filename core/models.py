@@ -28,3 +28,11 @@ class Rent(models.Model):
 
     def __str__(self):
         return self.uuid
+
+
+class ScooterUser(models.Model):
+    date_start = models.DateTimeField(blank=True, null=True)
+    uuid = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.uuid
