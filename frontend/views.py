@@ -18,28 +18,36 @@ def static_index(request):
     return render(request, 'static_index.html', context={})
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def login(request):
-    User.objects.create(first_name='Prueba2')
-    user = User.objects.get(first_name='Prueba2')
-
-    """username = request.POST.get('username')
-    password = request.POST.get('password')
-
     try:
-        user = User.objects.get(first_name='Prueba2')
-    except User.DoesNotExist:
-        return Response("User does not exist")"""
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-    token = Token.objects.create(user=user)
+        try:
+            User.objects.get(username=username)
+            response = "User already exists"
 
-    print(token.key)
-    return Response(token.key)
+        except:
+            User.objects.create_user(username=username, password=password)
+            user = User.objects.get(username=username)
+            token = Token.objects.create(user=user)
+            response = token.key
+
+    except:
+        response = "Could not create a Token"
+    return Response(response)
 
 
 @api_view(['GET'])
 def rent(request):
-    Rent.objects.create(uuid='abc12345')
-    rent = Rent.objects.get(uuid='abc12345')
-    "token = request.GET.get('token')"
-    return Response(rent.uuid)
+    try:
+        token = request.headers.get('token')
+        rents = Rent.objects.filter(uuid=token)
+        print(rents)
+        response = "The rent was found"
+    except:
+        print("Error")
+        response = "No parameters found"
+
+    return Response(response)
