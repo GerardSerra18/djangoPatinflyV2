@@ -17,6 +17,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.models import User
+from frontend import views
 
 from core.models import Scooter, Rent, ScooterUser
 from djangoPatinflyV2 import settings
@@ -72,7 +73,6 @@ class ScooterUserViewSet(viewsets.ModelViewSet):
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'scooter', ScooterViewSet)
-router.register(r'rent', RentViewSet)
 router.register(r'scooter_user', ScooterUserViewSet)
 
 urlpatterns = [
@@ -80,5 +80,8 @@ urlpatterns = [
                   path('api-auth/', include('rest_framework.urls')),
                   path('', include(router.urls)),
                   path('index', frontend_views.index),
-                  path('static_index', frontend_views.static_index)
+                  path('static_index', frontend_views.static_index),
+                  path('endpoints/login', views.login),
+                  path('endpoints/rent', views.rent)
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
