@@ -82,6 +82,7 @@ urlpatterns = [
                   path('index', frontend_views.index),
                   path('static_index', frontend_views.static_index),
                   path('endpoints/login', views.login),
-                  path('endpoints/rent', views.rent)
+                  path('endpoints/rent', views.rent),
+                  path('endpoints/validate', views.validate)
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

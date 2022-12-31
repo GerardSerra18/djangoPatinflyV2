@@ -40,6 +40,22 @@ def login(request):
 
 
 @api_view(['GET'])
+def validate(request):
+    try:
+        username = request.headers.get('username')
+        token = request.headers.get('token')
+
+        if str(Token.objects.get(key=token).user) == username:
+            response = "Valid Token"
+        else:
+            response = "Invalid Token"
+    except:
+        response = "Invalid Token"
+
+    return Response(response)
+
+
+@api_view(['GET'])
 def rent(request):
     try:
         token = request.headers.get('token')
