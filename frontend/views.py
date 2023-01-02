@@ -1,11 +1,16 @@
+import json
+
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from core.models import Scooter, Rent
+from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED
 
+from core.models import Scooter, Rent
 from rest_framework.authtoken.admin import User
-from django.contrib.auth.hashers import check_password
+
+from django.core.serializers import serialize
 
 
 # Create your views here.
@@ -61,17 +66,19 @@ def validate(request):
 def rent(request):
     token = request.headers.get('token')
     if isValidToken(token):
+        status = HTTP_200_OK
         try:
             rents = Rent.objects.filter(uuid=token)
-            print(rents)
-            response = "The rent was found"
+            response = serialize("json", rents)
+            response = json.loads(response)
         except:
-            response = 'Error'
+            response = None
 
     else:
-        response = "You need a valid token"
+        response = None
+        status = HTTP_401_UNAUTHORIZED
 
-    return Response(response)
+    return Response(response, status=status)
 
 
 def isValidToken(token):
