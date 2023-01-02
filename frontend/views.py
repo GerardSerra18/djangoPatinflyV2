@@ -36,6 +36,7 @@ def login(request):
 
     except:
         response = "Could not create a Token"
+
     return Response(response)
 
 
@@ -49,6 +50,7 @@ def validate(request):
             response = "Valid Token"
         else:
             response = "Invalid Token"
+
     except:
         response = "Invalid Token"
 
@@ -57,13 +59,24 @@ def validate(request):
 
 @api_view(['GET'])
 def rent(request):
-    try:
-        token = request.headers.get('token')
-        rents = Rent.objects.filter(uuid=token)
-        print(rents)
-        response = "The rent was found"
-    except:
-        print("Error")
-        response = "No parameters found"
+    token = request.headers.get('token')
+    if isValidToken(token):
+        try:
+            rents = Rent.objects.filter(uuid=token)
+            print(rents)
+            response = "The rent was found"
+        except:
+            response = 'Error'
+
+    else:
+        response = "You need a valid token"
 
     return Response(response)
+
+
+def isValidToken(token):
+    try:
+        Token.objects.get(key=token)
+        return True
+    except:
+        return False
