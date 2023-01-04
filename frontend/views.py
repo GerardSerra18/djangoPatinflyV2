@@ -81,6 +81,74 @@ def rent(request):
     return Response(response, status=status)
 
 
+@api_view(['GET'])
+def scooter(request):
+    token = request.headers.get('token')
+    if isValidToken(token):
+        status = HTTP_200_OK
+        try:
+            """TODO: Crear lógica para consultar el estado de todos los scooters"""
+        except:
+            response = None
+
+    else:
+        response = None
+        status = HTTP_401_UNAUTHORIZED
+
+    return Response(response, status=status)
+
+
+@api_view(['GET'])
+def scooter_uuid(request):
+    token = request.headers.get('token')
+    if isValidToken(token):
+        status = HTTP_200_OK
+        try:
+            """TODO: Crear lógica para consultar el estado de un scooter"""
+        except:
+            response = None
+
+    else:
+        response = None
+        status = HTTP_401_UNAUTHORIZED
+
+    return Response(response, status=status)
+
+
+@api_view(['POST'])
+def start_rent(request):
+    token = request.headers.get('token')
+    if isValidToken(token):
+        status = HTTP_200_OK
+        try:
+             """TODO: Crear lógica para empezar un alquiler"""
+        except:
+            response = None
+
+    else:
+        response = None
+        status = HTTP_401_UNAUTHORIZED
+
+    return Response(response, status=status)
+
+
+@api_view(['POST'])
+def stop_rent(request):
+    token = request.headers.get('token')
+    if isValidToken(token):
+        status = HTTP_200_OK
+        try:
+            """TODO: Crear lógica para detener un alquiler"""
+        except:
+            response = None
+
+    else:
+        response = None
+        status = HTTP_401_UNAUTHORIZED
+
+    return Response(response, status=status)
+
+
 def isValidToken(token):
     try:
         Token.objects.get(key=token)
