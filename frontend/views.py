@@ -5,15 +5,22 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED
+from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR
 
 from core.models import Scooter, Rent
 from rest_framework.authtoken.admin import User
 
 from django.core.serializers import serialize
 
+import datetime
 
 # Create your views here.
+version = "1.0"
+status_ok = HTTP_200_OK
+status_unauthorized = HTTP_401_UNAUTHORIZED
+status_error = HTTP_500_INTERNAL_SERVER_ERROR
+
+
 def index(request):
     context = {'project_name': 'Patinfly', 'scooters': Scooter.objects.all(), 'rents': Rent.objects.all()}
     return render(request, 'index.html', context)
@@ -66,87 +73,114 @@ def validate(request):
 def rent(request):
     token = request.headers.get('token')
     if isValidToken(token):
-        status = HTTP_200_OK
         try:
             rents = Rent.objects.filter(uuid=token)
             response = serialize("json", rents)
-            response = json.loads(response)
+            response_json = json.loads(response)
+            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
+                             "timestamp": datetime.datetime.now(), "version": version}
+
         except:
-            response = None
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+                             "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        response = None
-        status = HTTP_401_UNAUTHORIZED
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+                         "timestamp": datetime.datetime.now(), "version": version}
 
-    return Response(response, status=status)
+    return Response(base_response, status=base_response.get("status"))
 
 
 @api_view(['GET'])
 def scooter(request):
     token = request.headers.get('token')
     if isValidToken(token):
-        status = HTTP_200_OK
         try:
-            """TODO: Crear lógica para consultar el estado de todos los scooters"""
+            # TODO: CREAR LÓGICA PARA OBTENER LA INFORMACIÓN DE TODOS LOS SCOOTERS
+            rents = Rent.objects.filter(uuid=token)
+            response = serialize("json", rents)
+            response_json = json.loads(response)
+            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
+                             "timestamp": datetime.datetime.now(), "version": version}
+
         except:
-            response = None
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+                             "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        response = None
-        status = HTTP_401_UNAUTHORIZED
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+                         "timestamp": datetime.datetime.now(), "version": version}
 
-    return Response(response, status=status)
+    return Response(base_response, status=base_response.get("status"))
 
 
 @api_view(['GET'])
 def scooter_uuid(request):
     token = request.headers.get('token')
     if isValidToken(token):
-        status = HTTP_200_OK
         try:
-            """TODO: Crear lógica para consultar el estado de un scooter"""
+            # TODO: CREAR LÓGICA PARA OBTENER LA INFORMACIÓN DE UN SCOOTER A TRAVÉS DE SU UUID
+            rents = Rent.objects.filter(uuid=token)
+            response = serialize("json", rents)
+            response_json = json.loads(response)
+            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
+                             "timestamp": datetime.datetime.now(), "version": version}
+
         except:
-            response = None
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+                             "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        response = None
-        status = HTTP_401_UNAUTHORIZED
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+                         "timestamp": datetime.datetime.now(), "version": version}
 
-    return Response(response, status=status)
+    return Response(base_response, status=base_response.get("status"))
 
 
 @api_view(['POST'])
 def start_rent(request):
     token = request.headers.get('token')
     if isValidToken(token):
-        status = HTTP_200_OK
         try:
-             """TODO: Crear lógica para empezar un alquiler"""
+            # TODO: CREAR LÓGICA PARA ALGUILAR UN SCOOTER
+            rents = Rent.objects.filter(uuid=token)
+            response = serialize("json", rents)
+            response_json = json.loads(response)
+            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
+                             "timestamp": datetime.datetime.now(), "version": version}
+
         except:
-            response = None
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+                             "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        response = None
-        status = HTTP_401_UNAUTHORIZED
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+                         "timestamp": datetime.datetime.now(), "version": version}
 
-    return Response(response, status=status)
+    return Response(base_response, status=base_response.get("status"))
 
 
 @api_view(['POST'])
 def stop_rent(request):
     token = request.headers.get('token')
     if isValidToken(token):
-        status = HTTP_200_OK
         try:
-            """TODO: Crear lógica para detener un alquiler"""
+            # TODO: CREAR LÓGICA PARA DETENER EL ALGUILER DE UN SCOOTER
+            rents = Rent.objects.filter(uuid=token)
+            response = serialize("json", rents)
+            response_json = json.loads(response)
+            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
+                             "timestamp": datetime.datetime.now(), "version": version}
+
         except:
-            response = None
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+                             "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        response = None
-        status = HTTP_401_UNAUTHORIZED
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+                         "timestamp": datetime.datetime.now(), "version": version}
 
-    return Response(response, status=status)
+    return Response(base_response, status=base_response.get("status"))
 
 
 def isValidToken(token):
