@@ -42,3 +42,8 @@ class ResponseRent(models.Model):
     code = models.IntegerField(blank=True)
     msg = models.CharField(max_length=64)
 
+
+class ResponseScooter(models.Model):
+    code = models.IntegerField(blank=True)
+    msg = models.CharField(max_length=64)
+
