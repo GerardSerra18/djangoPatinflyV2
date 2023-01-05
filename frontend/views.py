@@ -96,19 +96,18 @@ def scooter(request):
     token = request.headers.get('token')
     if isValidToken(token):
         try:
-            # TODO: CREAR LÓGICA PARA OBTENER LA INFORMACIÓN DE TODOS LOS SCOOTERS
-            rents = Rent.objects.filter(uuid=token)
-            response = serialize("json", rents)
+            scooters = Scooter.objects.all()
+            response = serialize("json", scooters)
             response_json = json.loads(response)
-            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
+            base_response = {"code": status_ok, "msg": "OK", "Scooters": response_json,
                              "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "scooter": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "scooter": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))
