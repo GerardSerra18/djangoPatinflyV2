@@ -2,6 +2,7 @@ import json
 
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.db import models
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -31,7 +32,7 @@ def static_index(request):
 
 
 @api_view(['POST'])
-def login(request):
+def signin(request):
     try:
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -94,20 +95,19 @@ def rent(request):
 @api_view(['GET'])
 def scooter(request):
     token = request.headers.get('token')
+    print(token)
     if isValidToken(token):
         try:
-            scooters = Scooter.objects.all()
-            response = serialize("json", scooters)
-            response_json = json.loads(response)
-            base_response = {"code": status_ok, "msg": "OK", "Scooters": response_json,
+            scooters = Scooter.objects.values('name', 'vacant')
+            base_response = {"code": status_ok, "msg": "OK", "Scooters": scooters,
                              "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "scooter": [],
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "Scooters": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "scooter": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "Scooters": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))

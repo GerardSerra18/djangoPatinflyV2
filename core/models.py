@@ -36,14 +36,3 @@ class ScooterUser(models.Model):
 
     def __str__(self):
         return self.uuid
-
-
-class ResponseRent(models.Model):
-    code = models.IntegerField(blank=True)
-    msg = models.CharField(max_length=64)
-
-
-class ResponseScooter(models.Model):
-    code = models.IntegerField(blank=True)
-    msg = models.CharField(max_length=64)
-

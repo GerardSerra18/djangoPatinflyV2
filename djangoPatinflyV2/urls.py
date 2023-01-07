@@ -81,7 +81,7 @@ urlpatterns = [
                   path('', include(router.urls)),
                   path('index', frontend_views.index),
                   path('static_index', frontend_views.static_index),
-                  path('endpoints/login', views.login),
+                  path('endpoints/signin', views.signin),
                   path('endpoints/validate', views.validate),
                   path('endpoints/rent', views.rent),
                   path('endpoints/scooter', views.scooter),
