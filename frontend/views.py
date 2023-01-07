@@ -1,19 +1,16 @@
 import json
+import datetime
 
-from django.http import JsonResponse
 from django.shortcuts import render
-from django.db import models
+from django.core.serializers import serialize
+
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR
-
-from core.models import Scooter, Rent
 from rest_framework.authtoken.admin import User
 
-from django.core.serializers import serialize
-
-import datetime
+from core.models import Scooter, Rent
 
 # Create your views here.
 version = "1.0"
@@ -118,19 +115,19 @@ def scooter_uuid(request):
     token = request.headers.get('token')
     if isValidToken(token):
         try:
-            # TODO: CREAR LÓGICA PARA OBTENER LA INFORMACIÓN DE UN SCOOTER A TRAVÉS DE SU UUID
-            rents = Rent.objects.filter(uuid=token)
-            response = serialize("json", rents)
+            scooter_uuid = request.GET.get('scooter_uuid')
+            scooter = Scooter.objects.filter(uuid=scooter_uuid)
+            response = serialize("json", scooter)
             response_json = json.loads(response)
-            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
+            base_response = {"code": status_ok, "msg": "OK", "Scooter": response_json,
                              "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "Scooter": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "Scooter": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))
