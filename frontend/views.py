@@ -116,10 +116,12 @@ def scooter_uuid(request):
     if isValidToken(token):
         try:
             scooter_uuid = request.GET.get('scooter_uuid')
+            print(scooter_uuid)
             scooter = Scooter.objects.filter(uuid=scooter_uuid)
-            response = serialize("json", scooter)
-            response_json = json.loads(response)
-            base_response = {"code": status_ok, "msg": "OK", "Scooter": response_json,
+            print(scooter)
+            scooter_filtered = scooter.values('name', 'vacant')
+            print(scooter_filtered)
+            base_response = {"code": status_ok, "msg": "OK", "Scooter": scooter_filtered,
                              "timestamp": datetime.datetime.now(), "version": version}
 
         except:
