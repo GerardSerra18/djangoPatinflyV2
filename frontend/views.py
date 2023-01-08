@@ -76,7 +76,7 @@ def rent(request):
     token = request.headers.get('token')
     if isValidToken(token):
         try:
-            rents = Rent.objects.filter(uuid=token)
+            rents = Rent.objects.filter(user_token=token)
             response = serialize("json", rents)
             response_json = json.loads(response)
             base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
