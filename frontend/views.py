@@ -93,7 +93,6 @@ def rent(request):
 @api_view(['GET'])
 def scooter(request):
     token = request.headers.get('token')
-    print(token)
     if isValidToken(token):
         try:
             scooters = Scooter.objects.values('name', 'vacant')
@@ -170,7 +169,7 @@ def start_rent(request):
     return Response(base_response, status=base_response.get("status"))
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def stop_rent(request):
     token = request.headers.get('token')
     if isValidToken(token):
@@ -178,23 +177,21 @@ def stop_rent(request):
             scooter_uuid = request.GET.get('scooter_uuid')
             filtered_scooter = Scooter.objects.filter(uuid=scooter_uuid)
             vacant = filtered_scooter.values('vacant')
-            if vacant[0].get('vacant'):
+            if vacant[0].get('vacant') is False:
                 try:
                     num_rents = Rent.objects.filter(scooter_uuid=scooter_uuid, user_token=token).count()
                 except:
                     num_rents = 0
 
                 Rent.objects.filter(user_token=token, num_vacant=num_rents).update(date_stop=timezone.now())
-                print("Rent finished")
                 Scooter.objects.filter(uuid=scooter_uuid).update(vacant=True)
-                print("Scooter updated")
                 rent = Rent.objects.filter(user_token=token, num_vacant=num_rents)
                 response = serialize("json", rent)
                 response_json = json.loads(response)
                 base_response = {"code": status_ok, "msg": "OK", "Rent": response_json,
                                  "timestamp": datetime.datetime.now(), "version": version}
             else:
-                base_response = {"code": status_error, "msg": "SCOOTER NOT AVAILABLE", "Rent": [],
+                base_response = {"code": status_error, "msg": "ERROR: SCOOTER AVAILABLE", "Rent": [],
                                  "timestamp": datetime.datetime.now(), "version": version}
 
         except:
