@@ -51,6 +51,9 @@ def signin(request):
     return Response(response)
 
 
+def login_firebase(request):
+    return render(request, "frontend/login_redirect.html", {})
+
 @api_view(['GET'])
 def validate(request):
     try:
@@ -96,15 +99,15 @@ def scooter(request):
     if isValidToken(token):
         try:
             scooters = Scooter.objects.values('name', 'vacant')
-            base_response = {"code": status_ok, "msg": "OK", "Scooters": scooters,
+            base_response = {"code": status_ok, "msg": "OK", "scooters": scooters,
                              "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "Scooters": [],
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "scooters": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "Scooters": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "scooters": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))
@@ -118,15 +121,15 @@ def scooter_uuid(request):
             scooter_uuid = request.GET.get('scooter_uuid')
             scooter = Scooter.objects.filter(uuid=scooter_uuid)
             scooter_filtered = scooter.values('name', 'vacant')
-            base_response = {"code": status_ok, "msg": "OK", "Scooter": scooter_filtered,
+            base_response = {"code": status_ok, "msg": "OK", "scooter": scooter_filtered,
                              "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "Scooter": [],
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "scooter": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "Scooter": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "scooter": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))
@@ -152,18 +155,18 @@ def start_rent(request):
                 Scooter.objects.filter(uuid=scooter_uuid).update(vacant=False)
                 response = serialize("json", rent)
                 response_json = json.loads(response)
-                base_response = {"code": status_ok, "msg": "OK", "Rent": response_json,
+                base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
                                  "timestamp": datetime.datetime.now(), "version": version}
             else:
-                base_response = {"code": status_error, "msg": "SCOOTER NOT AVAILABLE", "Rent": [],
+                base_response = {"code": status_error, "msg": "ERROR SCOOTER NOT AVAILABLE", "rent": [],
                                  "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "Rent": [],
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "Rent": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))
@@ -188,18 +191,18 @@ def stop_rent(request):
                 rent = Rent.objects.filter(user_token=token, num_vacant=num_rents)
                 response = serialize("json", rent)
                 response_json = json.loads(response)
-                base_response = {"code": status_ok, "msg": "OK", "Rent": response_json,
+                base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
                                  "timestamp": datetime.datetime.now(), "version": version}
             else:
-                base_response = {"code": status_error, "msg": "ERROR: SCOOTER AVAILABLE", "Rent": [],
+                base_response = {"code": status_error, "msg": "ERROR SCOOTER AVAILABLE", "rent": [],
                                  "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "Rent": [],
+            base_response = {"code": status_error, "msg": "INTERNAL SERVER ERROR", "rent": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "Rent": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))
