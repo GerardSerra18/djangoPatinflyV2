@@ -3,6 +3,7 @@ import datetime
 
 from django.shortcuts import render
 from django.core.serializers import serialize
+from django.utils import timezone
 
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
@@ -116,11 +117,8 @@ def scooter_uuid(request):
     if isValidToken(token):
         try:
             scooter_uuid = request.GET.get('scooter_uuid')
-            print(scooter_uuid)
             scooter = Scooter.objects.filter(uuid=scooter_uuid)
-            print(scooter)
             scooter_filtered = scooter.values('name', 'vacant')
-            print(scooter_filtered)
             base_response = {"code": status_ok, "msg": "OK", "Scooter": scooter_filtered,
                              "timestamp": datetime.datetime.now(), "version": version}
 
@@ -135,24 +133,38 @@ def scooter_uuid(request):
     return Response(base_response, status=base_response.get("status"))
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def start_rent(request):
     token = request.headers.get('token')
     if isValidToken(token):
         try:
-            # TODO: CREAR LÓGICA PARA ALGUILAR UN SCOOTER
-            rents = Rent.objects.filter(uuid=token)
-            response = serialize("json", rents)
-            response_json = json.loads(response)
-            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
-                             "timestamp": datetime.datetime.now(), "version": version}
+            scooter_uuid = request.GET.get('scooter_uuid')
+            filtered_scooter = Scooter.objects.filter(uuid=scooter_uuid)
+            vacant = filtered_scooter.values('vacant')
+            if vacant[0].get('vacant'):
+                try:
+                    num_rents = Rent.objects.filter(scooter_uuid=scooter_uuid, user_token=token).count()
+                except:
+                    num_rents = 0
+
+                Rent.objects.create(date_start=timezone.now(), scooter_uuid=scooter_uuid, user_token=token,
+                                    num_vacant=num_rents + 1)
+                rent = Rent.objects.filter(user_token=token, num_vacant=num_rents + 1)
+                Scooter.objects.filter(uuid=scooter_uuid).update(vacant=False)
+                response = serialize("json", rent)
+                response_json = json.loads(response)
+                base_response = {"code": status_ok, "msg": "OK", "Rent": response_json,
+                                 "timestamp": datetime.datetime.now(), "version": version}
+            else:
+                base_response = {"code": status_error, "msg": "SCOOTER NOT AVAILABLE", "Rent": [],
+                                 "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "Rent": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "Rent": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))
@@ -163,19 +175,34 @@ def stop_rent(request):
     token = request.headers.get('token')
     if isValidToken(token):
         try:
-            # TODO: CREAR LÓGICA PARA DETENER EL ALGUILER DE UN SCOOTER
-            rents = Rent.objects.filter(uuid=token)
-            response = serialize("json", rents)
-            response_json = json.loads(response)
-            base_response = {"code": status_ok, "msg": "OK", "rent": response_json,
-                             "timestamp": datetime.datetime.now(), "version": version}
+            scooter_uuid = request.GET.get('scooter_uuid')
+            filtered_scooter = Scooter.objects.filter(uuid=scooter_uuid)
+            vacant = filtered_scooter.values('vacant')
+            if vacant[0].get('vacant'):
+                try:
+                    num_rents = Rent.objects.filter(scooter_uuid=scooter_uuid, user_token=token).count()
+                except:
+                    num_rents = 0
+
+                Rent.objects.filter(user_token=token, num_vacant=num_rents).update(date_stop=timezone.now())
+                print("Rent finished")
+                Scooter.objects.filter(uuid=scooter_uuid).update(vacant=True)
+                print("Scooter updated")
+                rent = Rent.objects.filter(user_token=token, num_vacant=num_rents)
+                response = serialize("json", rent)
+                response_json = json.loads(response)
+                base_response = {"code": status_ok, "msg": "OK", "Rent": response_json,
+                                 "timestamp": datetime.datetime.now(), "version": version}
+            else:
+                base_response = {"code": status_error, "msg": "SCOOTER NOT AVAILABLE", "Rent": [],
+                                 "timestamp": datetime.datetime.now(), "version": version}
 
         except:
-            base_response = {"code": status_error, "msg": "SERVER ERROR", "rent": [],
+            base_response = {"code": status_error, "msg": "SERVER ERROR", "Rent": [],
                              "timestamp": datetime.datetime.now(), "version": version}
 
     else:
-        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "rent": [],
+        base_response = {"code": status_unauthorized, "msg": "UNAUTHORIZED", "Rent": [],
                          "timestamp": datetime.datetime.now(), "version": version}
 
     return Response(base_response, status=base_response.get("status"))

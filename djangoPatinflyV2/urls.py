@@ -51,7 +51,7 @@ class ScooterViewSet(viewsets.ModelViewSet):
 class RentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Rent
-        fields = ['date_start', 'uuid']
+        fields = ['date_start', 'date_stop', 'scooter_uuid', 'user_token', 'num_vacant']
 
 
 class RentViewSet(viewsets.ModelViewSet):

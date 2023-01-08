@@ -14,7 +14,7 @@ admin.site.register(Scooter, ScooterAdmin)
 
 
 class RentAdmin(admin.ModelAdmin):
-    list_display = ['date_start', 'uuid']
+    list_display = ['date_start', 'date_stop', 'scooter_uuid', 'user_token', 'num_vacant']
 
 
 admin.site.register(Rent, RentAdmin)

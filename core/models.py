@@ -24,10 +24,13 @@ class Scooter(models.Model):
 
 class Rent(models.Model):
     date_start = models.DateTimeField(blank=True, null=True)
-    uuid = models.CharField(max_length=64)
+    date_stop = models.DateTimeField(blank=True, null=True)
+    scooter_uuid = models.CharField(max_length=64, blank=True)
+    user_token = models.CharField(max_length=64, blank=True)
+    num_vacant = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.uuid
+        return self.scooter_uuid
 
 
 class ScooterUser(models.Model):
