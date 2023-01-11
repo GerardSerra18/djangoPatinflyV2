@@ -54,6 +54,7 @@ def signin(request):
 def login_firebase(request):
     return render(request, "frontend/login_redirect.html", {})
 
+
 @api_view(['GET'])
 def validate(request):
     try:
@@ -68,6 +69,12 @@ def validate(request):
     except:
         response = "Invalid Token"
 
+    return Response(response)
+
+
+@api_view(['GET'])
+def status(request):
+    response = {"status": {"version": version, "build": 1, "update": datetime.datetime.now(), "name": "1-0001"}}
     return Response(response)
 
 
@@ -214,3 +221,7 @@ def isValidToken(token):
         return True
     except:
         return False
+
+
+
+

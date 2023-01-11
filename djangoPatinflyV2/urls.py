@@ -72,6 +72,7 @@ urlpatterns = [
                   path('endpoints/signin', views.signin),
                   path('endpoints/login', views.login_firebase, name="login-firebase"),
                   path('endpoints/validate', views.validate),
+                  path('status', views.status),
                   path('endpoints/rent', views.rent),
                   path('endpoints/scooter', views.scooter),
                   path('endpoints/scooter/', views.scooter_uuid),
